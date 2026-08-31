@@ -1,0 +1,16 @@
+# Logs and results
+logs/*.log
+logs/*.md
+results.json
+memory/global_memory.json
+
+# Python environment
+venv/
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+
+# OS-specific
+.DS_Store
