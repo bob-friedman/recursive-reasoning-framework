@@ -204,7 +204,7 @@ git diff core/                          # Ensure this returns empty (proves modu
 
 ### Citation
 
-* Friedman, R. (2026) *Recursive Reasoning Framework* (v1.1). Zenodo. https://doi.org/10.5281/zenodo.22214013
+* Friedman, R. (2026) *Recursive Reasoning Framework* (v1.1). Zenodo. https://doi.org/10.5281/zenodo.22214012
 
 ### Acknowledgments
 
