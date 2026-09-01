@@ -7,7 +7,7 @@
 ## 1. Abstract
 The Recursive Reasoning Framework (RRF) is a domain-agnostic testing harness designed to move LLM agents away from "lucky guessing" and toward systematic discovery. Unlike standard evaluation harnesses that rely on massive context windows or simple success/fail scalars, RRF enforces a **discrete cognitive layer** through a loop of hypothesis, deterministic backtesting, and cross-task memory persistence.
 
-By decoupling environment logs from the prompt and using an atomic JSON memory loop, RRF enables **Zero-Shot Knowledge Transfer**: an agent can solve a complex task using logical deductions inherited from a prior histories without any fine-tuning or prompt-bloat.
+By decoupling environment logs from the prompt and using an atomic JSON memory loop, RRF enables **Zero-Shot Knowledge Transfer**: an agent can solve a complex task using logical deductions inherited from past histories without any fine-tuning or prompt-bloat.
 
 ---
 
