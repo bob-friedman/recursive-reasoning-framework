@@ -2,7 +2,7 @@
 ### *A Scientific-Method-as-a-Service Harness for LLM Agents*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22214013.svg)](https://doi.org/10.5281/zenodo.22214013)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22214012.svg)](https://doi.org/10.5281/zenodo.22214012)
 
 ## 1. Abstract
 The Recursive Reasoning Framework (RRF) is a domain-agnostic testing harness designed to move Large Language Model (LLM) agents away from "lucky guessing" and toward systematic discovery. Unlike standard evaluation harnesses that rely on large context windows or simple success/fail scalars, RRF enforces a **discrete cognitive layer** through a loop of hypothesis generation, deterministic backtesting, and cross-task memory persistence.
