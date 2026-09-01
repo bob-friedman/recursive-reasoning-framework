@@ -12,6 +12,9 @@ class StateMachineEnvironment(BaseEnvironment):
     - PRESS_D: Neutral state step.
     """
 
+    domain = "state_machine"
+    description = "Cryptic sequential state-machine: B->C=Blue, Blue+E=Green"
+
     def __init__(self):
         self.valid_actions = ["PRESS_A", "PRESS_B", "PRESS_C", "PRESS_D", "PRESS_E"]
         self.color = "White"
