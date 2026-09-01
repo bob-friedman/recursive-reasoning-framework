@@ -10,6 +10,8 @@ import argparse
 import datetime
 import fcntl
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import importlib
+import inspect
 import json
 import logging
 import os
@@ -357,12 +359,70 @@ def run_task_agent(session: TaskSession, port: int, timeout: int) -> float:
 
     return time.time() - start_time
 
+def sanitize_env_name(env_name: str) -> str:
+    """Allow only safe Python module names to prevent path traversal."""
+    if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", env_name):
+        raise ValueError(f"Invalid env name '{env_name}': must match ^[a-zA-Z_][a-zA-Z0-9_]*$")
+    return env_name
+
+
+def list_available_plugins() -> Dict[str, str]:
+    """
+    Scan plugins/ for importable modules. Returns {module_name: description}.
+    Does not require hard-coded registration.
+    """
+    plugins_dir = BASE_DIR / "plugins"
+    available: Dict[str, str] = {}
+    if not plugins_dir.exists():
+        return available
+    for p in plugins_dir.glob("*.py"):
+        if p.name.startswith("_"):
+            continue
+        mod_name = p.stem
+        # Try lightweight docstring extraction without importing
+        try:
+            text = p.read_text(encoding="utf-8", errors="ignore")
+            # first class docstring heuristic
+            m = re.search(r'class\s+\w+\(BaseEnvironment\)\s*:\s*"""(.*?)"""', text, re.DOTALL)
+            if not m:
+                m = re.search(r'class\s+\w+\(BaseEnvironment\)\s*:\s*\'\'\'(.*?)\'\'\'', text, re.DOTALL)
+            desc = m.group(1).strip().splitlines()[0][:120] if m else ""
+        except Exception:
+            desc = ""
+        available[mod_name] = desc
+    return available
+
+
 def get_plugin_environment(env_name: str) -> BaseEnvironment:
-    """Dynamic Plugin Loader"""
-    if env_name == "state_machine":
-        from plugins.state_machine import StateMachineEnvironment
-        return StateMachineEnvironment()
-    raise ValueError(f"Unknown environment plugin '{env_name}'.")
+    """
+    Truly dynamic plugin loader.
+    - Sanitizes env_name to prevent traversal
+    - Uses importlib to load plugins.{env_name}
+    - Finds first concrete subclass of BaseEnvironment in the module
+    - Raises with helpful list of available plugins on failure
+    """
+    env_name = sanitize_env_name(env_name)
+    try:
+        module = importlib.import_module(f"plugins.{env_name}")
+    except ModuleNotFoundError as e:
+        available = list_available_plugins()
+        hint = f" Available: {sorted(available.keys())}" if available else ""
+        raise ValueError(f"Unknown environment plugin '{env_name}'.{hint}") from e
+
+    # Find concrete subclasses
+    candidates = []
+    for _, obj in inspect.getmembers(module, inspect.isclass):
+        if issubclass(obj, BaseEnvironment) and obj is not BaseEnvironment:
+            # ensure class was defined in this module, not imported
+            if obj.__module__ == module.__name__:
+                candidates.append(obj)
+
+    if not candidates:
+        raise ValueError(f"Plugin '{env_name}' loaded but no BaseEnvironment subclass found in plugins/{env_name}.py")
+    if len(candidates) > 1:
+        HARNESS_LOGGER.warning(f"Plugin '{env_name}' has multiple env classes {candidates}, using {candidates[0].__name__}")
+    return candidates[0]()
+
 
 def main():
     parser = argparse.ArgumentParser(description="Recursive Reasoning Framework Harness")
@@ -372,7 +432,25 @@ def main():
     parser.add_argument("--max-actions", type=int, default=100, help="Max actions per task")
     parser.add_argument("--timeout", type=int, default=300, help="Agent timeout per task in seconds")
     parser.add_argument("--port", type=int, default=None, help="Force specific server port")
+    parser.add_argument("--list-envs", action="store_true", help="List available plugins and exit")
     args = parser.parse_args()
+
+    if args.list_envs:
+        available = list_available_plugins()
+        if not available:
+            print("No plugins found in plugins/")
+        else:
+            print("Available plugins:")
+            for name, desc in sorted(available.items()):
+                print(f"  - {name}: {desc}")
+            # Try to show richer metadata by instantiating
+            for name in sorted(available.keys()):
+                try:
+                    env = get_plugin_environment(name)
+                    print(f"    -> {name}: domain={env.get_domain()}, actions={env.get_valid_actions()}, desc={env.get_description()[:80]}")
+                except Exception as e:
+                    print(f"    -> {name}: load error: {e}")
+        sys.exit(0)
 
     LOG_DIR.mkdir(exist_ok=True)
     MEMORY_DIR.mkdir(exist_ok=True)
@@ -381,7 +459,11 @@ def main():
         print(f"ERROR: {SKILLS_TEMPLATE} not found.", file=sys.stderr)
         sys.exit(1)
 
-    env = get_plugin_environment(args.env)
+    try:
+        env = get_plugin_environment(args.env)
+    except ValueError as ve:
+        print(f"ERROR: {ve}", file=sys.stderr)
+        sys.exit(2)
     results = []
 
     for task_id in args.tasks:
