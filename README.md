@@ -223,7 +223,7 @@ Transitioning from discrete puzzle environments to biological or chemical data i
 
 ### Citation
 
-* Friedman, R. (2026) *Recursive Reasoning Framework* (v1.2). Zenodo. https://doi.org/10.5281/zenodo.22214012
+* Friedman, R. (2026) *Recursive Reasoning Framework* (v1.3). Zenodo. https://doi.org/10.5281/zenodo.22214012
 
 ### Acknowledgments
 
