@@ -34,7 +34,7 @@ The agent interacts with a local HTTP server at `{BASE_URL}`.
 6. **Verify:** Read the new state. Compare the actual state to the prediction.
     - *Match:* Mark hypothesis verified.
     - *Miss:* Mark falsified and immediately revise. **You must explain why the prediction differed from the actual state (e.g., phase flipped) before forming a new hypothesis.**
-7. **Update Memory:** Update the structured JSON memory file (provided in the prompt) with newly confirmed rules. Remove or downgrade falsified rules. **Strictly adhere to the `schema` field** (`high|medium|low`). For Eleusis, never store singleton `greater/smaller` without phase condition after step 5.
+7. **Update Memory:** Update the structured JSON memory file (provided in the prompt) with newly confirmed rules. Remove or downgrade falsified rules. **Strictly adhere to the `schema` field** (`high|medium|low`). For Eleusis, never store singleton `greater/smaller` without phase condition after step 5. Before writing, load the current file, dedupe `rules` by `rule` text keeping the higher-confidence copy, and set each `domain` to the current plugin's canonical domain (from the plugin source) — not the task id.
 8. **Targeted Search (Eleusis terminal):** Once phase model is confirmed, do NOT guess for `is_win: length>=10 && even`. Write Python BFS/DFS over `1..10` using the phase-aware predicate to find the minimal valid even terminal sequence, then execute it stepwise with predictions.
 9. **Repeat:** Continue until the API returns `done: true` or `is_win: true`. Carry confirmed general rules forward into global memory for subsequent tasks.
 

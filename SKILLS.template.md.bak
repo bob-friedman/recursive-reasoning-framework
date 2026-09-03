@@ -25,7 +25,7 @@ The agent interacts with a local HTTP server at `{BASE_URL}`.
 6. **Verify:** Read the new state. Compare the actual state to the prediction.
    - *Match:* Mark hypothesis verified.
    - *Miss:* Mark falsified and immediately revise. **You must explain why the prediction differed from the actual state before forming a new hypothesis.**
-7. **Update Memory:** Update the structured JSON memory file (provided in the prompt) with newly confirmed rules. Remove falsified rules. **Strictly adhere to the `schema` field defined within the memory file** to prevent corrupting the self-recursive learning data. Ensure valid JSON format.
+7. **Update Memory:** Update the structured JSON memory file (provided in the prompt) with newly confirmed rules. Remove falsified rules. **Strictly adhere to the `schema` field defined within the memory file** to prevent corrupting the self-recursive learning data. Ensure valid JSON format. Before writing, load the current file, dedupe `rules` by `rule` text keeping the higher-confidence copy, and set each `domain` to the current plugin's canonical domain (from the plugin source) — not the task id.
 8. **Repeat:** Continue until the API returns `done: true` or `is_win: true`. Carry confirmed general rules forward into the global memory for subsequent tasks.
 
 ## Directives
