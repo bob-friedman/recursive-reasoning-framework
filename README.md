@@ -62,11 +62,10 @@ To validate non-stationary rule handling and cross-domain memory isolation, the 
 
 ### Case Study 4: Tic-Tac-Toe (Minimal Viable Exemplar)
 
-The Tic-Tac-Toe plugin (`plugins/tictactoe_env.py`) validates the framework's ability to scale *down* to minimal complexity while preserving memory hygiene.
+The Tic-Tac-Toe plugin (`plugins/tictactoe_env.py`) validates the framework's ability to scale *down* to minimal complexity.
 
-* **Optimal Algorithmic Bypass**: Because the state space is highly constrained, the LLM successfully extracted the deterministic rules directly from the execution history without needing to autonomously write a Breadth-First Search (BFS) script, proving the engine adapts tool-use to task complexity.
-* **Zero-Shot Inheritance**: A 62% reduction in execution time for the second task (`tictactoe_2` completed in 31 seconds versus 81 seconds for `tictactoe_1`) confirms the memory loop allows the agent to inherit high-confidence rules without redundant exploration.
-* **Memory Hygiene**: Prompt-level `dedup-on-write` instructions successfully resolved domain fragmentation, keeping the atomic JSON memory strictly organized by the canonical domain.
+* **Optimal Choice of Algorithm**: Since the state space is highly constrained, the LLM extracted the deterministic rules directly from the execution history without use of a Breadth-First Search approach, proving the engine adapts its tool-use to task complexity.
+* **Zero-Shot Inheritance**: A 62% reduction in execution time for the second task (`tictactoe_2` completed in 31 seconds versus 81 seconds for `tictactoe_1`) confirms the memory loop allows the agent to inherit high-confidence rules without a redundant exploration phase.
 
 ---
 
@@ -181,17 +180,9 @@ git diff core/                          # Ensure this returns empty (proves modu
 
 ---
 
-## 7. Capability Recursion & The Operator Boundary
+## 7. Architectural Boundaries and Epistemological Limits
 
-* **Capability Recursion**: The framework acts as a dynamic bridge between the LLM and the Python ecosystem. During log backtesting, the agent can invoke any standard or third-party library (`scipy`, `sympy`, etc.). This is bounded by *knowability* (the LLM must understand the algorithmic mechanism) and *testability* (the plugin must expose the necessary variables). Obscure algorithms are not spontaneously invented; rather, known computational tools are systematically applied.
-* **The Operator Boundary (Outer-Loop vs. Inner-Loop)**: Full self-recursion—defined as an agent autonomously generating its own hypotheses, priorities, and ultimate stop conditions—is explicitly *not* a design goal of this framework. RRF models a scientific workflow where the **human operator provides the motivation, the experimental question, and the ultimate win condition** (the Outer-Loop). The agent operates autonomously strictly within the bounds of rigorous execution, deterministic backtesting, and rule discovery (the Inner-Loop).
-* **The Amplification Effect**: Without RRF, human operators must manually code, execute, and debug algorithms like Breadth-First Search or changepoint detection. With RRF, the language model autonomously writes the algorithm, validates the `predicted_outcome`, and logs the resulting rule with a full audit trail. The framework acts as a force multiplier for human-directed inquiry, accelerating rigorous discovery across domains without requiring the agent to generate its own purpose.
-
----
-
-## 8. Architectural Boundaries and Epistemological Limits
-
-To properly position RRF within the broader artificial intelligence landscape, it is essential to define both its capabilities and its strict boundaries.
+To properly position RRF within the broader artificial intelligence landscape, it is essential to define both its capabilities and boundaries.
 
 ### The Verifiability Bottleneck
 At its core, RRF requires an objective, computationally testable verifier. If an outcome cannot be programmatically validated or falsified, the system breaks down. This fundamental requirement is shared with training paradigms like Reinforcement Learning with Verifiable Rewards (RLVR); truth must be computationally testable. 
@@ -202,27 +193,27 @@ While operating on similar epistemological constraints, RRF is significantly mor
 * **Algorithmic Recall:** The capability recursion is explicitly bounded by the LLM's pre-existing knowledge of algorithms. The framework acts as a multiplier to deploy known computational tools (e.g., Breadth-First Search, mathematical libraries). It will not spontaneously invent novel algorithms outside its pre-training data.
 
 ### The State-Space Ceiling (The Chess Boundary)
-Directly scaling to complex, unconstrained environments such as standard Chess fractures the framework’s core philosophy:
+Directly scaling to complex, unconstrained environments such as standard Chess violates the framework’s core philosophy:
 * **Action Space Inflation:** Injecting 30+ legal moves into the context window at every step degrades token efficiency.
 * **Unfalsifiable State Spaces:** With approximately 10^44 possible positions, standard whole-log backtesting becomes impossible. An agent cannot falsify a complex positional heuristic based on a localized log of a few games.
-* **Stochastic Adversaries:** A hidden, non-deterministic opponent policy removes the exact falsifiability required to log a rule with high confidence.
+* **Stochastic Adversaries:** A hidden, non-deterministic opponent policy removes the exact falsifiability requirement to log a rule with high confidence.
 
-A claim is banked only when it is **knowable** (the model understands the test), **testable** (the environment exposes necessary variables), **tractable** (the log is small enough for complete replay), and **falsifiable**.
+A claim is valid only when it is **knowable** (the model understands the test), **testable** (the environment exposes necessary variables), **tractable** (the log is small enough for complete replay), and **falsifiable**.
 
 ---
 
-## 9 Application in Natural Sciences and Bioinformatics
+## 8. Application in the Natural Sciences
 
 Despite strict boundaries in unbounded board games, computational and experimental natural sciences are the most suitable domains for RRF. Physical laws and biological networks are defined by underlying quantitative rules and bounded state spaces, aligning perfectly with the digitized scientific method.
 
 ### Algorithmic Offloading
 Language models natively struggle with complex raw computation. RRF resolves this by acting as a bridge between symbolic hypothesis generation and rigorous quantitative verification. If a problem requires combinatorial search, statistical distributions, or complex algebra, the agent autonomously writes and executes Python code (utilizing libraries such as `scipy`, `numpy`, or `sympy`). The deterministic output informs the conclusion, effectively eliminating hallucinated mathematical logic.
 
-### Probabilistic Verification for Soft Sciences
+### Probabilistic Verification
 Transitioning from discrete puzzle environments to biological or chemical data introduces a necessary shift from rigid boolean truth to statistical significance.
 * **Statistical Falsification:** In domains containing natural noise, the framework evaluates rules based on statistical confidence (e.g., p-values, residual errors) rather than absolute contradictions. A rule may be validated but tagged with a "Medium" confidence level based on variance.
 * **Bioinformatics Integration:** Within Gene Regulatory Network Discovery, biological data is inherently probabilistic. An agent can navigate raw gene expression datasets by querying specific experimental conditions. It proposes a biological mechanism, predicts the statistical signature expected, and writes a script to perform variance or correlation analysis. 
-* **Zero-Shot Transfer in Biology:** Once a regulatory relationship survives rigorous statistical backtesting, it is recorded in the global memory schema. When assigned a new task within the same domain—such as analyzing a mutant cell line with a specific gene deletion—the agent inherits the previously verified network map to deduce cascading effects without redundant data analysis.
+* **Zero-Shot Transfer in Biology:** Once a regulatory relationship survives rigorous statistical backtesting, it is recorded in the global memory schema. When assigned a new task within the same domain, such as analyzing a mutant cell line with a specific gene deletion, the agent inherits the previously verified network map to deduce cascading effects without redundant data analysis.
 
 ---
 
