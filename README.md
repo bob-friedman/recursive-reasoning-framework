@@ -78,7 +78,7 @@ The Tic-Tac-Toe plugin (`plugins/tictactoe_env.py`) validates the framework's ab
 To test abstraction capability within highly constrained limits, an interactive grid environment (`plugins/arc_grid_env.py`) was introduced. The environment demands manipulation of spatial relationships (translations, reflections, flood-fills) without raw visual perception. 
 
 * **Algorithmic Abstraction**: Instead of processing large raw matrices, the environment provides a compact algebraic summary (`bbox`, `relations`, `hist`). The agent successfully proposed and tested Python-based hypotheses against historical trajectories (`trajectory.jsonl`), effectively decoupling reasoning from token-heavy spatial processing.
-* **Zero-Shot Transfer on Private Variants**: The agent solved public tasks (`arc_move_1`, `arc_recolor_1`), banking generalized rules in its atomic memory. When subjected to unseen holdout variants featuring altered dimensions and reversed goal directions (`arc_move_2`, `arc_recolor_2`), the agent inherited the correct primitives and solved the tasks optimally (1-2 steps) without structural rediscovery. 
+* **Zero-Shot Transfer on Private Variants**: The agent solved public tasks (e.g., `arc_move_1`, `arc_recolor_1`), banking generalized rules in the atomic memory loop. When subjected to unseen holdout variants featuring altered dimensions and novel mechanisms (`arc_move_2`, `arc_recolor_2`, `arc_rotate_1`, `arc_contact_1`, and `arc_fill_2`), the agent inherited the correct primitives from an expanded library of generalized operators (including rotation, reflection, flood-fill, and contact-mapping). By selecting and applying the verified operations, the agent solved the tasks optimally (1-3 steps) without structural rediscovery.
 * **Autonomous Memory Consolidation**: Faced with a memory cap, the agent independently utilized a Python backtest to fuse a "slide rule" and a "win-condition rule" into a single, verified Minimum Description Length (MDL) representation, maintaining strict consolidation of knowledge without human intervention.
 
 ---
@@ -226,6 +226,12 @@ The LLM is selecting operations (e.g., flood-fill, rotation) from a predefined, 
 
 Reports of advanced models "inventing" primitives typically refer to the synthesis of highly recognizable computer science concepts (e.g., standard cellular automata behaviors, breadth-first search queues, parity checks) applied to novel data structures. Because pre-training datasets contain vast repositories of algorithms, physics engines, and array manipulation logic, an LLM is effectively retrieving and combining these existing priors. True *ex nihilo* invention of a previously undocumented mathematical concept is not occurring. Instead, the models excel at mapping well-documented programming priors to abstract geometric puzzles when confined within a rigid, deterministic testing harness.
 
+**Symmetric Limitations and Priors**
+The reliance on pre-existing algorithmic sets is entirely symmetric with human cognition. Biological agents bring innate, evolved physical priors (e.g., object permanence, spatial symmetry, topological closure) to visual puzzles. Conversely, language models bring mathematical matrices and vast color-space representations. A puzzle keyed to physical spectra invisible to the human eye (e.g., infrared or ultraviolet) yet mathematically encoded in a 16-million shade matrix would be unsolvable to a human subject while remaining trivial to a language model. Each system experiences failure precisely where pre-existing priors terminate.
+
+**Bounding the Domain-Specific Language (DSL)**
+While standard machine learning architectures scale parameters infinitely, the operational primitive count required for generalization within this framework is bounded. Previous exhaustive domain-specific languages (e.g., Hodel's ARC-DSL) required approximately 160 fine-grained primitives. By utilizing coarser, highly generalized operators, the current framework strictly scopes its experimental space to 38 operations currently undergoing batch testing. This finite set is designed to cover foundational concept families (e.g., counting, tiling, gravity, nesting, scaling). This bound maps closely to the 17 human concept categories identified in LARC utterance taxonomies (a structured classification of natural language instructions used by humans to solve visual puzzles), establishing a concrete, testable ceiling on systemic complexity.
+
 ---
 
 ## 8. Application in the Natural Sciences
@@ -241,6 +247,12 @@ Transitioning from discrete puzzle environments to biological or chemical data i
 * **Bioinformatics Integration:** Within Gene Regulatory Network Discovery, biological data is inherently probabilistic. An agent can navigate raw gene expression datasets by querying specific experimental conditions. It proposes a biological mechanism, predicts the statistical signature expected, and writes a script to perform variance or correlation analysis. 
 * **Zero-Shot Transfer in Biology:** Once a regulatory relationship survives rigorous statistical backtesting, it is recorded in the global memory schema. When assigned a new task within the same domain, such as analyzing a mutant cell line with a specific gene deletion, the agent inherits the previously verified network map to deduce cascading effects without redundant data analysis.
 
+### Concept Maps: From Grid Matrices to Tensors
+
+Visual puzzles require rigorous relational logic that theoretically transfers seamlessly to abstract conceptual mapping. Within this computational framework, both spatial relationships and abstract scientific concepts are treated as reducible to algebraic expressions utilizing a shared set of primitives. 
+
+Just as a 2D grid matrix captures discrete binary relations (e.g., adjacency, containment, sequence), scaling the mathematical representations to multi-dimensional tensors allows for the encoding of N-ary relations, causal directed acyclic graphs (DAGs), and modality. The transition from foundational grid structures to tensor networks facilitates a higher-order relational logic, enabling the application of deterministic verification to multi-dimensional abstract concepts and complex data structures.
+
 ---
 
 ### License
@@ -249,7 +261,9 @@ Transitioning from discrete puzzle environments to biological or chemical data i
 
 ### Citation
 
-* Friedman, R. (2026) *Recursive Reasoning Framework* (v1.4). Zenodo. https://doi.org/10.5281/zenodo.22214012
+* Friedman, R. 2025. *Teaching Computers to Think Like Us: Cracking the Code of Visual Puzzles.* Preprints 2025, 2025051677. https://doi.org/10.20944/preprints202505.1677.v1
+
+* Friedman, R. 2026. *Recursive Reasoning Framework* (v1.5). Zenodo. https://doi.org/10.5281/zenodo.22214012
 
 ### Acknowledgments
 
