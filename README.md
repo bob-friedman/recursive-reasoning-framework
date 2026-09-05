@@ -289,7 +289,7 @@ Just as a 2D grid matrix captures discrete binary relations (e.g., adjacency, co
 
 * Friedman, R. 2025. *Teaching Computers to Think Like Us: Cracking the Code of Visual Puzzles.* Preprints 2025, 2025051677. https://doi.org/10.20944/preprints202505.1677.v1
 
-* Friedman, R. 2026. *Recursive Reasoning Framework* (v1.5). Zenodo. https://doi.org/10.5281/zenodo.22214012
+* Friedman, R. 2026. *Recursive Reasoning Framework* (v1.6). Zenodo. https://doi.org/10.5281/zenodo.22214012
 
 ### Acknowledgments
 
