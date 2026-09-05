@@ -17,6 +17,12 @@ By decoupling environment logs from the prompt and utilizing an atomic JSON memo
 * **Mechanism Elucidation**: The harness mandates that agents state an explicit *predicted outcome* before acting, turning every action into a formal scientific experiment.
 * **Recursive Meta-Learning**: Discovered knowledge is stored in a structured schema, allowing the framework to serve as a meta-learning complex for systematic exploration across varied domains.
 
+### Engine Capabilities
+* **Enforced Scientific Gate**: Actions submitted to the live environment will be rejected (HTTP 400) unless accompanied by a non-empty `predicted_outcome`. This requires that every action serves as a formalized experiment.
+* **Structured Trajectory Logging**: Environments output machine-readable JSONL trajectories (`logs/<task>_trajectory.jsonl`) capturing pre-observation, action, predicted outcome, and post-observation. This enables precise backtesting and failure-pattern detection without parsing human-readable text.
+* **Executable Skills Library**: Alongside declarative memory rules, the system maintains a structured library of reusable Python scripts (`memory/skills.json`). Agents are instructed to codify generic algorithms (e.g., Breadth-First Search, change-point analysis) and reuse them across tasks to prevent redundant computation.
+* **Knowledge Transfer (Bootstrap)**: Prior run directories or memory files can be imported into new sessions via the `--bootstrap-from` flag, enabling continual learning and cross-domain rule inheritance.
+
 ---
 
 ## 3. Case Studies
@@ -66,6 +72,14 @@ The Tic-Tac-Toe plugin (`plugins/tictactoe_env.py`) validates the framework's ab
 
 * **Optimal Choice of Algorithm**: Since the state space is highly constrained, the LLM extracted the deterministic rules directly from the execution history without use of a Breadth-First Search approach, proving the engine adapts its tool-use to task complexity.
 * **Zero-Shot Inheritance**: A 62% reduction in execution time for the second task (`tictactoe_2` completed in 31 seconds versus 81 seconds for `tictactoe_1`) confirms the memory loop allows the agent to inherit high-confidence rules without a redundant exploration phase.
+
+### Case Study 5: ARC-Grid Physics (Executable World Models)
+
+To test abstraction capability within highly constrained limits, an interactive grid environment (`plugins/arc_grid_env.py`) was introduced. The environment demands manipulation of spatial relationships (translations, reflections, flood-fills) without raw visual perception. 
+
+* **Algorithmic Abstraction**: Instead of processing large raw matrices, the environment provides a compact algebraic summary (`bbox`, `relations`, `hist`). The agent successfully proposed and tested Python-based hypotheses against historical trajectories (`trajectory.jsonl`), effectively decoupling reasoning from token-heavy spatial processing.
+* **Zero-Shot Transfer on Private Variants**: The agent solved public tasks (`arc_move_1`, `arc_recolor_1`), banking generalized rules in its atomic memory. When subjected to unseen holdout variants featuring altered dimensions and reversed goal directions (`arc_move_2`, `arc_recolor_2`), the agent inherited the correct primitives and solved the tasks optimally (1-2 steps) without structural rediscovery. 
+* **Autonomous Memory Consolidation**: Faced with a memory cap, the agent independently utilized a Python backtest to fuse a "slide rule" and a "win-condition rule" into a single, verified Minimum Description Length (MDL) representation, maintaining strict consolidation of knowledge without human intervention.
 
 ---
 
@@ -200,6 +214,18 @@ Directly scaling to complex, unconstrained environments such as standard Chess v
 
 A claim is valid only when it is **knowable** (the model understands the test), **testable** (the environment exposes necessary variables), **tractable** (the log is small enough for complete replay), and **falsifiable**.
 
+### Invention vs. Discovery (The ARC-AGI Generalization Gap)
+
+**The Approach to ARC-AGI at Small Scale**
+The approach utilized in this framework is highly effective for bounding ARC-like problems. By offloading spatial arithmetic to a deterministic Python engine (`grid_algebra.py`) and restricting the LLM to the role of a "proposer", the framework circumvents the traditional spatial-hallucination flaws of language models. The strategy of using a bounded Domain-Specific Language (DSL) paired with an MDL-scored world model ensures that solutions are generalized and computationally falsifiable. This filters out "lucky guessing" entirely, forcing the system to rely on verifiable algorithmic logic.
+
+**Invention vs. Discovery of Primitives**
+Regarding whether the system is "inventing" or "discovering" primitives: the process documented here is strictly **discovery**. 
+
+The LLM is selecting operations (e.g., flood-fill, rotation) from a predefined, human-engineered set (`grid_algebra.py`) and determining which sequence correctly predicts the state transition. Even when generating arbitrary Python, the agent relies heavily on strong priors established during pre-training. 
+
+Reports of advanced models "inventing" primitives typically refer to the synthesis of highly recognizable computer science concepts (e.g., standard cellular automata behaviors, breadth-first search queues, parity checks) applied to novel data structures. Because pre-training datasets contain vast repositories of algorithms, physics engines, and array manipulation logic, an LLM is effectively retrieving and combining these existing priors. True *ex nihilo* invention of a previously undocumented mathematical concept is not occurring. Instead, the models excel at mapping well-documented programming priors to abstract geometric puzzles when confined within a rigid, deterministic testing harness.
+
 ---
 
 ## 8. Application in the Natural Sciences
@@ -223,7 +249,7 @@ Transitioning from discrete puzzle environments to biological or chemical data i
 
 ### Citation
 
-* Friedman, R. (2026) *Recursive Reasoning Framework* (v1.3). Zenodo. https://doi.org/10.5281/zenodo.22214012
+* Friedman, R. (2026) *Recursive Reasoning Framework* (v1.4). Zenodo. https://doi.org/10.5281/zenodo.22214012
 
 ### Acknowledgments
 
