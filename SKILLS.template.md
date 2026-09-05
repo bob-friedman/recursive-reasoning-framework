@@ -38,6 +38,13 @@ The agent interacts with a local HTTP server at `{BASE_URL}`.
 8. **Targeted Search (Eleusis terminal):** Once phase model is confirmed, do NOT guess for `is_win: length>=10 && even`. Write Python BFS/DFS over `1..10` using the phase-aware predicate to find the minimal valid even terminal sequence, then execute it stepwise with predictions.
 9. **Repeat:** Continue until the API returns `done: true` or `is_win: true`. Carry confirmed general rules forward into global memory for subsequent tasks.
 
+## Memory Consolidation (all domains, mandatory at task end)
+Memory cap is 5 rules per domain. If your update would exceed it (or two rules share one mechanism):
+1. Propose ONE merged rule covering both parents (keep a short example clause from each).
+2. Backtest the merged text in Python against every transition cited by both parents (quote trajectory steps).
+3. Merge commits only on full fits; remove the parents only after the merge passes.
+Growth without consolidation proof is a review failure, not a success. Manual curation will not save you — the loop owns this.
+
 ## Directives (unchanged + one additive)
 - Write Python scripts to check logs before taking actions.
 - Keep hypotheses narrow and testable.

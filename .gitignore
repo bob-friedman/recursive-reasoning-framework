@@ -1,8 +1,10 @@
 # Logs and results
 logs/*.log
 logs/*.md
-results.json
+logs/*trajectory.jsonl
+results*.json
 memory/global_memory.json
+memory/skills.json
 
 # Python environment
 venv/
