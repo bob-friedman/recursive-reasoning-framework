@@ -3,6 +3,7 @@ logs/*.log
 logs/*.md
 logs/*trajectory.jsonl
 results*.json
+SUMMARY_*.md
 memory/global_memory.json
 memory/skills.json
 
